@@ -30,6 +30,15 @@ jobs:
           echo "USER_USERNAME=${{ secrets.USER_USERNAME }}" >> $GITHUB_ENV
           echo "USER_REPO=${{ secrets.USER_REPO }}" >> $GITHUB_ENV
           echo "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}" >> $GITHUB_ENV
+          echo "NEWS_API_KEY=${{ secrets.NEWS_API_KEY }}" >> $GITHUB_ENV
 
       - name: Run script to update news
         run: python news.py
+
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.email "${{ secrets.USER_EMAIL }}"
+          git config --global user.name "${{ secrets.USER_USERNAME }}"
+          git add news.tmp
+          git commit -m "Update Basketball News" || exit 0
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ secrets.USER_REPO }}.git || exit 0
