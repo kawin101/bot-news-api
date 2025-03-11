@@ -28,7 +28,7 @@ jobs:
         run: |
           echo "USER_EMAIL=${{ secrets.USER_EMAIL }}" >> $GITHUB_ENV
           echo "USER_USERNAME=${{ secrets.USER_USERNAME }}" >> $GITHUB_ENV
-          echo "MY_GITHUB_REPO=${{ secrets.MY_GITHUB_REPO }}" >> $GITHUB_ENV
+          echo "USER_REPO=${{ secrets.USER_REPO }}" >> $GITHUB_ENV
           echo "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}" >> $GITHUB_ENV
 
       - name: Run script to update news

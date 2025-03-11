@@ -4,12 +4,12 @@ import requests
 # โหลดค่า ENV จาก GitHub Secrets
 USER_EMAIL = os.getenv("USER_EMAIL")
 USER_USERNAME = os.getenv("USER_USERNAME")
-MY_GITHUB_REPO = os.getenv("MY_GITHUB_REPO")
+USER_REPO = os.getenv("USER_REPO")
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 
 # News API Key
 NEWS_API_KEY = os.getenv("NEWS_API_KEY")
-API_URL = f"https://newsapi.org/v2/everything?q=basketball&language=en&apiKey={NEWS_API_KEY}"
+API_URL = f"https://newsapi.org/v2/top-headlines?category=sports&q=basketball&language=en&apiKey={NEWS_API_KEY}"
 
 def fetch_basketball_news():
     """ดึงข้อมูลข่าวกีฬาบาสเกตบอลจาก NewsAPI"""
@@ -17,7 +17,7 @@ def fetch_basketball_news():
     if response.status_code == 200:
         return response.json()
     else:
-        print(f"Error fetching news: {response.status_code}")
+        print(f"Error fetching news: {response.status_code} - {response.text}")
         return None
 
 def format_news_data(data):
@@ -40,7 +40,7 @@ def push_to_github():
     os.system(f"git config --global user.email '{USER_EMAIL}'")
     os.system("git add news.tmp")
     os.system("git commit -m 'Update Basketball News' || exit 0")
-    os.system(f"git push https://x-access-token:{GITHUB_TOKEN}@github.com/{MY_GITHUB_REPO}.git || exit 0")
+    os.system(f"git push https://x-access-token:{GITHUB_TOKEN}@github.com/{USER_REPO}.git || exit 0")
 
 if __name__ == "__main__":
     data = fetch_basketball_news()
