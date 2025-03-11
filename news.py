@@ -6,20 +6,22 @@ import string
 # 🔹 โหลด API Key จาก GitHub Secrets
 NEWS_API_KEY = os.getenv("NEWS_API_KEY")
 
-# 🔹 ใช้ `top-headlines` เพื่อดึงข่าวฟรี
+# 🔹 ใช้ `top-headlines` และเรียงตามเวลาที่เผยแพร่ (`publishedAt`)
 API_URL = "https://newsapi.org/v2/top-headlines"
 
 def fetch_basketball_news():
     """
     ดึงข้อมูลข่าวกีฬาบาสเกตบอลจาก NewsAPI
-    - ถ้าดึงข่าวได้ → คืนค่าข่าวแรกสุด (ตัดเหลือ 20 ตัวอักษร)
-    - ถ้าดึงไม่ได้ → คืนค่า None
+    - ใช้ `sortBy=publishedAt` เพื่อให้ได้ข่าวใหม่ล่าสุด
+    - สุ่มเลือกข่าว 1 ข่าวจากรายการ แทนการเลือกข่าวแรกเสมอ
+    - ถ้าดึงข่าวไม่ได้ คืนค่า None เพื่อใช้ข้อความสุ่มแทน
     """
     headers = {"Authorization": f"Bearer {NEWS_API_KEY}"}
     params = {
         "category": "sports",
         "q": "basketball",
-        "language": "en"
+        "language": "en",
+        "sortBy": "publishedAt"  # เรียงตามเวลาที่เผยแพร่
     }
 
     response = requests.get(API_URL, headers=headers, params=params)
@@ -27,7 +29,9 @@ def fetch_basketball_news():
     if response.status_code == 200:
         data = response.json()
         if data and "articles" in data and data["articles"]:
-            return data["articles"][0]["title"][:20]  # จำกัดข้อความ 20 ตัวอักษร
+            articles = data["articles"]
+            selected_article = random.choice(articles)  # 🔹 สุ่มเลือกข่าวจากรายการ
+            return selected_article["title"][:20]  # จำกัดความยาว 20 ตัวอักษร
         return "No news available."
     else:
         print(f"Error fetching news: {response.status_code} - {response.text}")
@@ -36,7 +40,6 @@ def fetch_basketball_news():
 def generate_random_text(length=20):
     """
     สร้างข้อความสุ่มที่มีเฉพาะตัวอักษร A-Z ความยาว 20 ตัวอักษร
-    - ใช้ `random.choices()` เพื่อสุ่มตัวอักษร
     """
     return ''.join(random.choices(string.ascii_uppercase, k=length))
 
