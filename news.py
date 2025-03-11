@@ -46,10 +46,7 @@ def read_old_news():
     return None
 
 def update_tmp_file(content):
-    """ลบไฟล์ `news.tmp` แล้วสร้างใหม่พร้อมเขียนข้อมูล"""
-    if os.path.exists("news.tmp"):
-        os.remove("news.tmp")
-
+    """เขียนทับไฟล์ `news.tmp` ด้วยข้อมูลใหม่"""
     with open("news.tmp", "w", encoding="utf-8") as file:
         file.write(content)
 
